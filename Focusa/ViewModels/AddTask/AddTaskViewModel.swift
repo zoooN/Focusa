@@ -10,7 +10,8 @@ import Combine
 class AddTaskViewModel: ObservableObject {
     
     @Published var taskName: String = ""
-    @Published var isValidTaskName: Bool = false
+    @Published var taskTime: Int = 0
+    @Published var isValidTask: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     private let parentViewModel: TaskListViewModel
@@ -18,13 +19,13 @@ class AddTaskViewModel: ObservableObject {
     init(parentViewModel: TaskListViewModel) {
         self.parentViewModel = parentViewModel
         
-        $taskName
-            .map { !$0.isEmpty }
-            .assign(to: \.isValidTaskName, on: self)
+        Publishers.CombineLatest($taskName, $taskTime)
+            .map { !$0.isEmpty &&  $1 > 0 }
+            .assign(to: \.isValidTask, on: self)
             .store(in: &cancellables)
     }
     
     func addTask() {
-        self.parentViewModel.addNewTask(name: taskName)
+        self.parentViewModel.addNewTask(name: taskName, time: taskTime)
     }
 }

@@ -42,7 +42,7 @@ struct TaskItemView: View {
     }
     
     var body: some View {
-        Text(viewModel.text)
+        Text("\(viewModel.text) \(viewModel.time)")
     }
 }
 
@@ -58,7 +58,10 @@ struct AddTaskView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField("Имя", text: $viewModel.taskName)
+                TextField("Name", text: $viewModel.taskName)
+                    .textFieldStyle(.roundedBorder)
+                Stepper("Time in mins \(viewModel.taskTime)", value: $viewModel.taskTime, in: 0...60)
+                Spacer()
             }
             .padding()
             .navigationTitle("Add task")
@@ -77,7 +80,7 @@ struct AddTaskView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .disabled(!viewModel.isValidTaskName)
+                    .disabled(!viewModel.isValidTask)
                 }
             }
         }

@@ -8,4 +8,5 @@ struct Task {
 
     var id: Int
     var name: String
+    var time: Int
 }
