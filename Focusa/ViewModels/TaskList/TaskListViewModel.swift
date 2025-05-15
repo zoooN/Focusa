@@ -10,7 +10,7 @@ class TaskListViewModel: ObservableObject {
     
     @Published var taskItems: [TaskItemViewModel] = []
     @Published var isEmpty: Bool = true
-
+    
     func addNewTask(name: String){
         let taskId = taskItems.count
         let task = Task(id: taskId, name: name)

@@ -13,8 +13,11 @@ class AddTaskViewModel: ObservableObject {
     @Published var isValidTaskName: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
+    private let parentViewModel: TaskListViewModel
     
-    init() {
+    init(parentViewModel: TaskListViewModel) {
+        self.parentViewModel = parentViewModel
+        
         $taskName
             .map { !$0.isEmpty }
             .assign(to: \.isValidTaskName, on: self)
@@ -22,6 +25,6 @@ class AddTaskViewModel: ObservableObject {
     }
     
     func addTask() {
-        
+        self.parentViewModel.addNewTask(name: taskName)
     }
 }

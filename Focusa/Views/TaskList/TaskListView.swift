@@ -28,35 +28,14 @@ struct TaskListView: View {
                 }
             }
             .sheet(isPresented: $isShowingForm) {
-                NavigationStack {
-                    VStack {
-                        TextField("Имя", text: "")
-                    }
-                    .navigationTitle("Add task")
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                isShowingForm = false
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
-                        }
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                isShowingForm = false
-                            } label: {
-                                Image(systemName: "plus")
-                            }
-                        }
-                    }
-                }
+                AddTaskView(viewModel: AddTaskViewModel(parentViewModel: viewModel), isShowingForm: $isShowingForm)
             }
         }
     }
 }
 
 struct TaskItemView: View {
-    @ObservedObject private var viewModel: TaskItemViewModel;
+    @ObservedObject private var viewModel: TaskItemViewModel
     
     init(viewModel: TaskItemViewModel) {
         self.viewModel = viewModel
@@ -65,6 +44,45 @@ struct TaskItemView: View {
     var body: some View {
         Text(viewModel.text)
     }
+}
+
+struct AddTaskView: View {
+    @ObservedObject private var viewModel: AddTaskViewModel
+    @Binding var isShowingForm: Bool
+    
+    init(viewModel: AddTaskViewModel, isShowingForm: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._isShowingForm = isShowingForm
+    }
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                TextField("Имя", text: $viewModel.taskName)
+            }
+            .padding()
+            .navigationTitle("Add task")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isShowingForm = false
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.addTask()
+                        isShowingForm = false
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .disabled(!viewModel.isValidTaskName)
+                }
+            }
+        }
+    }
+    
 }
 
 #Preview {
